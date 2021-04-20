@@ -33,7 +33,7 @@ class ImportLanguage
             ]);
         }
     }
-    public function importTranslations(){
+    public function importTranslationsFromFiles(){
         $languageTranslations = $this->allTranslations();
         foreach ($languageTranslations as $language => $groups){
             $languageId = Language::where('language',$language)->first()->id;

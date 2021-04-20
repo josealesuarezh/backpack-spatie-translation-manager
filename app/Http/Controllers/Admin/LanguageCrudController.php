@@ -92,9 +92,9 @@ class LanguageCrudController extends CrudController
 
     public function import(){
         $driver = new ImportLanguage();
-        $driver->allLanguages();
-        $driver->importTranslations();
-
+        $driver->importLanguagesFromFiles();
+        $driver->importTranslationsFromFiles();
+        return "imported successfully";
     }
 
 }
