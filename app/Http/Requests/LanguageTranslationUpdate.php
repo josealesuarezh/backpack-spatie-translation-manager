@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class TranslationRequest extends FormRequest
+class LanguageTranslationUpdate extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,6 @@ class TranslationRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
         return backpack_auth()->check();
     }
 
@@ -25,32 +24,24 @@ class TranslationRequest extends FormRequest
      */
     public function rules()
     {
+//        dd($this);
         return [
-            // 'name' => 'required|min:5|max:255'
+            'key' => 'required',
+            'text' => 'required',
+            'group' => [
+                'required',
+                Rule::unique('language_lines')
+                    ->ignore($this->id)
+                    ->where('key', $this->key)
+                    ->where('group', $this->group)
+            ]
         ];
     }
 
-    /**
-     * Get the validation attributes that apply to the request.
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            //
-        ];
-    }
-
-    /**
-     * Get the validation messages that apply to the request.
-     *
-     * @return array
-     */
     public function messages()
     {
         return [
-            //
+            'unique' => "The combination of group and key must be unique"
         ];
     }
 }

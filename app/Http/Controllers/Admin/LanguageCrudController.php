@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Drivers\ImportLanguage;
 use App\Http\Requests\LanguageRequest;
 use App\Models\Language;
-use App\Models\Translation;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Filesystem\Filesystem;
@@ -14,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Parent_;
+use Prologue\Alerts\Facades\Alert;
 
 /**
  * Class LanguageCrudController
@@ -94,7 +94,8 @@ class LanguageCrudController extends CrudController
         $driver = new ImportLanguage();
         $driver->importLanguagesFromFiles();
         $driver->importTranslationsFromFiles();
-        return "imported successfully";
+        Alert::add('success', 'Language files imported successfully')->flash();
+        return back();
     }
 
 }

@@ -16,4 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/import',[\App\Http\Controllers\Admin\LanguageCrudController::class,'import']);
+Route::group([
+    'middleware' => array_merge(
+        (array) config('backpack.base.web_middleware', 'web'),
+        (array) config('backpack.base.middleware_key', 'admin')
+    )
+], function () {
+    Route::get('/import',[\App\Http\Controllers\Admin\LanguageCrudController::class,'import']);
+    Route::get('/translation/{id}/{lang}',[\App\Http\Controllers\Admin\LanguageTranslationCrudController::class,'getTranslation']);
+});
+

@@ -5,12 +5,14 @@ namespace App\Drivers;
 
 
 use App\Models\Language;
+use App\Models\LanguageTranslation;
 use App\Models\Translation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use Prologue\Alerts\Facades\Alert;
 
 class ImportLanguage
 {
@@ -39,16 +41,14 @@ class ImportLanguage
             $languageId = Language::where('language',$language)->first()->id;
             foreach ($groups['group'] as $group => $translation){
                 foreach ($translation as $key => $value){
-
                     try{
-                        Translation::firstOrCreate([
-                            'language_id' => $languageId,
-                            'group'  => $group,
-                            'key' => $key,
-                            'value' => is_array($value) ? implode(',',$value):$value
-                        ]);
+                        $languageT = LanguageTranslation::firstOrNew(
+                            ['group'  => $group,'key' => $key]
+                        );
+                        $languageT->setTranslation($language,is_array($value) ? implode(',',$value):$value);
+                        $languageT->save();
                     }catch (\ErrorException $e){
-                        dd($languageId,$group,$key,$value);
+                        Alert::add('error', $e->getMessage())->flash();
                     }
 
                 }
